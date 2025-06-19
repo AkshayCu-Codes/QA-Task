@@ -5,19 +5,20 @@ describe('User Logout', () => {
   const login = new LoginPage();
   const account = new AccountPage();
 
-  it('should log out successfully', () => {
+  it('should log out successfully using fixture credentials', () => {
+    cy.fixture('credentials.json').then((creds) => {
+      login.visit();
+      login.fillCredentials(creds.email, creds.password);
+      login.submit();
 
-    login.visit();
-    login.fillCredentials('yourtestemail@gmail.com', 'Password@123!');
-    login.submit();
+      cy.get('.panel.header').should('contain.text', 'Welcome');
 
-    cy.get('.panel.header').should('contain.text', 'Welcome');
+      account.logout();
 
-    account.logout();
+      cy.url().should('include', 'customer/account/logoutSuccess');
 
-    cy.url().should('include', 'customer/account/logoutSuccess');
-
-    cy.wait(5000);
-    cy.url().should('eq', 'https://magento.softwaretestingboard.com/');
+      cy.wait(5000);
+      cy.url().should('eq', 'https://magento.softwaretestingboard.com/');
+    });
   });
 });
