@@ -33,7 +33,7 @@ describe('Change Password', () => {
           email: email,
           password: newPass
         });
-        cy.pause();
+        cy.wait(5000);
       });
       cy.pause();
 
@@ -42,12 +42,10 @@ describe('Change Password', () => {
       
       login.visit();
       login.fillCredentials(email, newPass);
-      cy.pause();
+      cy.wait(5000);
       login.submit();
 
       cy.get('.panel.header').should('contain.text', 'Welcome');
-      cy.pause();
-
       cy.get('.customer-welcome').first().click();
       cy.contains('Sign Out').should('be.visible').click();
       cy.pause();

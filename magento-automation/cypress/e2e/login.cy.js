@@ -7,6 +7,7 @@ describe('User Login', () => {
     cy.fixture('credentials.json').then((creds) => {
       login.visit();
       login.fillCredentials(creds.email, creds.password);
+      cy.wait(5000);
       login.submit();
 
       cy.get('.panel.header').should('contain.text', 'Welcome');
