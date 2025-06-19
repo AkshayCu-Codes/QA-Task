@@ -5,26 +5,55 @@ describe('Change Password', () => {
   const login = new LoginPage();
   const account = new AccountSettingsPage();
 
-  it('should login and change password successfully', () => {
-    const email = 'yourtestemail@gmail.com';
-    const oldPass = 'Password@123!';
-    const newPass = 'NewPassword456!';
+  it('should login with old password, change to new one, and save it', () => {
+    cy.fixture('credentials.json').then((creds) => {
+      const email = creds.email;
+      const oldPass = creds.password;
+      const newPass = 'NewPassword@456!'; 
 
-    // Clear session if already logged in
-    cy.visit('https://magento.softwaretestingboard.com/customer/account/logout');
+      cy.visit('https://magento.softwaretestingboard.com/customer/account/logout')
 
-    // Step 1: Login
-    login.visit();
-    login.fillCredentials(email, oldPass);
-    login.submit();
+      //Login
+      login.visit();
+      login.fillCredentials(email, oldPass);
+      cy.pause();
+      login.submit();
+      cy.pause();
 
-    // Step 2: Go to account settings and change password
-    account.visit();
-    account.changePassword(oldPass, newPass);
+      //Change password
+      account.visit();
+      cy.pause();
+      account.changePassword(oldPass, newPass);
+      cy.pause();
 
-    // Step 3: Verify success message
-    cy.contains('You saved the account information.').should('be.visible');
+      // Verify success message
+      cy.contains('You saved the account information.').should('be.visible').then(() => {
+        // Update fixture with new password
+        cy.writeFile('cypress/fixtures/credentials.json', {
+          email: email,
+          password: newPass
+        });
+        cy.pause();
+      });
+      cy.pause();
+
+      // OPTIONAL: Verify re-login with new password
+      cy.visit('https://magento.softwaretestingboard.com/customer/account/logout');
+      
+      login.visit();
+      login.fillCredentials(email, newPass);
+      cy.pause();
+      login.submit();
+
+      cy.get('.panel.header').should('contain.text', 'Welcome');
+      cy.pause();
+
+      cy.get('.customer-welcome').first().click();
+      cy.contains('Sign Out').should('be.visible').click();
+      cy.pause();
+
+      cy.visit('https://magento.softwaretestingboard.com/');
+      cy.pause();
+    });
   });
 });
-
-

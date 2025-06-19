@@ -1,7 +1,7 @@
 class AccountSettingsPage {
   visit() {
     cy.visit('https://magento.softwaretestingboard.com/customer/account/edit/');
-    cy.get('#change-password').check(); // check the box
+    cy.get('#change-password').check();
   }
 
   changePassword(currentPassword, newPassword) {
