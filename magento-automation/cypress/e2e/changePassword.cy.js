@@ -37,7 +37,7 @@ describe('Change Password', () => {
       });
       cy.pause();
 
-      // OPTIONAL: Verify re-login with new password
+      //Verify re-login with new password
       cy.visit('https://magento.softwaretestingboard.com/customer/account/logout');
       
       login.visit();
